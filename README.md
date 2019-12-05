@@ -1,2 +1,2 @@
 # mayacal_api
-A simple API for working with the mayacal library
+WORK IN PROGRESS - A simple API for working with the mayacal library
