@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block home_active %}"nav-item"{% endblock %}
+{% block how_active %}"nav-item"{% endblock %}
+{% block cal_active %}"nav-item active"{% endblock %}
+{% block faq_active %}"nav-item"{% endblock %}
+
+{% block body %}
+  <div class="container" style="padding:30px">
+    <h1> The Long Count </h1>
+    <p> The Long Count consists of a sequence of 5 different time periods, listed in the table below:</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col"># of Days</th>
+          <th scope="col"># of Tun</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Bak'tun</th>
+          <td>144,000</td>
+          <td>400</td>
+        </tr>
+
+        <tr>
+          <th scope="row">K'atun</th>
+          <td>7,200</td>
+          <td>20</td>
+        </tr>
+
+        <tr>
+          <th scope="row">Tun</th>
+          <td>360</td>
+          <td>1</td>
+        </tr>
+
+        <tr>
+          <th scope="row">Winal</th>
+          <td>20</td>
+          <td>-</td>
+        </tr>
+
+        <tr>
+          <th scope="row">Kin</th>
+          <td>1</td>
+          <td>-</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+  <div class="container">
+  <h1> The Haab </h1>
+  <ol class="list-group">
+    <li>Pop</li>
+
+  </ol>
+
+{% endblock %}

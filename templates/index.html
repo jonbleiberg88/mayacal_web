@@ -1,0 +1,220 @@
+{% extends "layout.html" %}
+
+{% block home_active %}"nav-item active"{% endblock %}
+{% block how_active %}"nav-item"{% endblock %}
+{% block cal_active %}"nav-item"{% endblock %}
+{% block faq_active %}"nav-item"{% endblock %}
+
+{% block body %}
+  <div class="col-10" style="padding:30px">
+      <!-- <div class="col">
+        <label class="control-label" for="baktun">Bak'tun</label>
+
+        <input type="text" class="form-control w-1" name="baktun" id="baktun" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1">
+      </div>
+      <div class="col">
+        <label class="control-label" for="katun">K'atun</label>
+        <input type="text" class="form-control w-1" name="katun" id="katun" placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1">
+      </div>
+      <div class="col">
+        <label class="control-label" for="tun">Tun</label>
+        <input type="text" class="form-control w-1" name="tun" id="tun" placeholder="0" aria-label="Tun" aria-describedby="basic-addon1">
+      </div>
+      <div class="col">
+        <label class="control-label" for="winal">Winal</label>
+        <input type="text" class="form-control w-1" name="winal" id="winal" placeholder="0" aria-label="Winal" aria-describedby="basic-addon1">
+      </div>
+      <div class="col">
+        <label class="control-label" for="kin">Kin</label>
+        <input type="text" class="form-control w-1" name="kin" id="kin" placeholder="0" aria-label="Kin" aria-describedby="basic-addon1">
+      </div> -->
+      <datalist id="tzolkin">
+        <option value="Imix">
+        <option value="Ik'">
+        <option value="Ak'bal">
+        <option value="K'an">
+        <option value="Chikchan">
+        <option value="Kimi">
+        <option value="Manik'">
+        <option value="Lamat">
+        <option value="Muluk">
+        <option value="Ok">
+        <option value="Chuwen">
+        <option value="Eb">
+        <option value="Ben">
+        <option value="Ix">
+        <option value="Men">
+        <option value="Kib">
+        <option value="Kaban">
+        <option value="Etz'nab">
+        <option value="Kawak">
+        <option value="Ajaw">
+      </datalist>
+
+      <datalist id="haab">
+        <option value="Pop">
+        <option value="Wo">
+        <option value="Sip">
+        <option value="Sotz'">
+        <option value="Sek">
+        <option value="Xul">
+        <option value="Yaxk'in">
+        <option value="Mol">
+        <option value="Ch'en">
+        <option value="Yax">
+        <option value="Sak">
+        <option value="Keh">
+        <option value="Mak">
+        <option value="Kank'in">
+        <option value="Muwan">
+        <option value="Pax">
+        <option value="K'ayab">
+        <option value="Kumk'u">
+        <option value="Wayeb">
+      </datalist>
+
+
+      <!-- <table class="table table-bordered border-right-0 border-bottom-0 border-top-0">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Bak'tun</th>
+            <th scope="col">Katun</th>
+            <th scope="col">Tun</th>
+            <th scope="col">Winal</th>
+            <th scope="col">Kin</th>
+            <th scope="col">#</th>
+            <th scope="col">Tzolkin</th>
+            <th scope="col">#</th>
+            <th scope="col">Haab</th>
+            <th scope="col" class="border-0"></th>
+
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>
+              <input type="text" class="form-control" placeholder="9" required pattern="[1-2]*[0-9]">
+              <div class="invalid-feedback">
+                  0-9
+              </div>
+            </td>
+            <td><input type="text" class="form-control" placeholder="0"/></td>
+            <td><input type="text" class="form-control" placeholder="0"/></td>
+            <td><input type="text" class="form-control" placeholder="0"/></td>
+            <td><input type="text" class="form-control" placeholder="0"/></td>
+            <td><input type="text" class="form-control" placeholder="8"/></td>
+            <td>
+              <input type="text" class="form-control" list="tzolkin" id="tzolkin_0" placeholder="Ajaw">
+
+            </td>
+            <td><input type="text" class="form-control" placeholder="13"/></td>
+            <td>
+              <input type="text" list="haab" class="form-control" placeholder="Keh"/>
+
+            </td>
+
+            <td class=border-0><button type="button" class="btn btn-primary btn-sm">Add Row</button></td>
+
+          </tr>
+
+        </tbody>
+      </table> -->
+
+      <form class="needs-validation">
+        <div class="form-row">
+          <div class="col">
+            <label class="cal-label" for="baktun">Bak'tun</label>
+            <input type="text" class="form-control" name="baktun" id="baktu" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1" pattern="[1-2]*[0-9]">
+          </div>
+          <div class="col">
+            <label class="cal-label" for="katun">K'atun</label>
+            <input type="text" class="form-control" name="katun" id="katun" placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1">
+          </div>
+          <div class="col">
+            <label class="cal-label" for="tun">Tun</label>
+            <input type="text" class="form-control" name="tun" id="tun" placeholder="0" aria-label="Tun" aria-describedby="basic-addon1">
+          </div>
+          <div class="col">
+            <label class="cal-label" for="winal">Winal</label>
+            <input type="text" class="form-control" name="winal" id="winal" placeholder="0" aria-label="Winal" aria-describedby="basic-addon1">
+          </div>
+          <div class="col">
+            <label class="cal-label" for="kin">Kin</label>
+            <input type="text" class="form-control" name="kin" id="kin" placeholder="0" aria-label="Kin" aria-describedby="basic-addon1">
+          </div>
+          <div class="col">
+            <label class="cal-label num-label-align" for="tzolkin-num">#</label>
+            <input type="text" class="form-control num-width" name="tzolkin-num" id="tzolkin-num" placeholder="8" aria-label="#" aria-describedby="basic-addon1">
+          </div>
+          <div class="col">
+            <label class="cal-label" for="tzolkin">Tzolkin</label>
+            <input type="text" list="tzolkin" class="form-control" name="tzolkin" id="tzolkin" placeholder="Ajaw" aria-label="Tzolkin" aria-describedby="basic-addon1">
+          </div>
+          <div class="col">
+            <label class="cal-label num-label-align" for="haab-num">#</label>
+            <input type="text" class="form-control num-width" name="haab-num" id="haab-num" placeholder="13" aria-label="#" aria-describedby="basic-addon1">
+          </div>
+          <div class="col">
+            <label class="cal-label" for="haab">Haab</label>
+            <input type="text" list="haab" class="form-control" name="haab" id="haab" placeholder="Keh" aria-label="Haab" aria-describedby="basic-addon1">
+          </div>
+          <div class="form-row button-align">
+            <button type="submit" name="row_0" id="row_0" class="btn btn-primary btn-sm button-padding">Add Row</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+
+
+
+    <!--
+
+    <form>
+      <div class="row">
+        <div class="col">
+          <label for="baktun">Bak'tun</label>
+        </div>
+        <div class="col">
+          <label for="katun">K'atun</label>
+        </div>
+        <div class="col">
+          <label for="tun">Tun</label>
+        </div>
+        <div class="col">
+          <label for="winal">Winal</label>
+        </div>
+        <div class="col">
+          <label for="kin">Kin</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <input type="text" class="form-control" name="baktun" id="baktun" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1">
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" name="katun" id="katun" placeholder="9" aria-label="K'atun" aria-describedby="basic-addon1">
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" name="tun" id="tun" placeholder="9" aria-label="Tun" aria-describedby="basic-addon1">
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" name="winal" id="winal" placeholder="9" aria-label="Winal" aria-describedby="basic-addon1">
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" name="kin" id="kin" placeholder="9" aria-label="Kin" aria-describedby="basic-addon1">
+        </div>
+        <div class="col">
+          <label for="add">Add</label>
+          <button class="btn btn-primary" id="add">Add</button>
+        </div>
+    </form> -->
+  </div>
+
+
+
+
+{% endblock %}

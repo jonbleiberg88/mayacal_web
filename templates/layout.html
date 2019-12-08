@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Maya Calendar</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href={{ url_for('static', filename='styles.css') }}>
+    </head>
+    <body>
+      <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#81c784">
+        <a class="navbar-brand" href="/">Mayacal</a>
+        <div>
+          <ul class="navbar-nav mr-auto">
+            <li class={% block home_active %}{% endblock %}>
+              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class={% block how_active %}{% endblock %}>
+              <a class="nav-link" href="/howitworks">How it Works</a>
+            </li>
+            <li class={% block cal_active %}{% endblock %}>
+              <a class="nav-link" href="/calendar">The Calendar</a>
+            </li>
+            <li class={% block faq_active %}{% endblock %}>
+              <a class="nav-link" href="/faq">FAQ</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      {% block body %}
+
+      {% endblock %}
+    </body>
+</html>

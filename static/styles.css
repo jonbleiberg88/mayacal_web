@@ -1,0 +1,29 @@
+.container {
+  padding: 30px;
+}
+
+.button-align {
+  align-items: flex-end;
+  padding-left: 10px;
+}
+
+.button-padding {
+  padding: 0.46rem 0.75rem;
+}
+
+.num-width {
+  margin-left: auto;
+  width: 50%;
+}
+
+.num-label-align {
+  width: 100%;
+  max-width: 50%;
+  text-align: right;
+}
+
+.cal-label {
+  font-weight: bold;
+}
+
+/*# sourceMappingURL=styles.css.map */
