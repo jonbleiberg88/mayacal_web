@@ -6,7 +6,7 @@
 {% block faq_active %}"nav-item"{% endblock %}
 
 {% block body %}
-  <div class="col-10" style="padding:30px">
+  <div class="col-12" style="padding:30px">
       <!-- <div class="col">
         <label class="control-label" for="baktun">Bak'tun</label>
 
@@ -126,46 +126,54 @@
       <form class="needs-validation">
         <div class="form-row">
           <div class="col">
-            <label class="cal-label" for="baktun">Bak'tun</label>
-            <input type="text" class="form-control" name="baktun" id="baktu" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1" pattern="[1-2]*[0-9]">
+            <label class="cal-label" for="baktun-0">Bak'tun</label>
+            <input type="text" class="form-control" name="baktun" id="baktun-0" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1" pattern="[1-2]*[0-9]">
           </div>
           <div class="col">
-            <label class="cal-label" for="katun">K'atun</label>
-            <input type="text" class="form-control" name="katun" id="katun" placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1">
+            <label class="cal-label" for="katun-0">K'atun</label>
+            <input type="text" class="form-control" name="katun" id="katun-0" placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1">
           </div>
           <div class="col">
-            <label class="cal-label" for="tun">Tun</label>
-            <input type="text" class="form-control" name="tun" id="tun" placeholder="0" aria-label="Tun" aria-describedby="basic-addon1">
+            <label class="cal-label" for="tun-0">Tun</label>
+            <input type="text" class="form-control" name="tun" id="tun-0" placeholder="0" aria-label="Tun" aria-describedby="basic-addon1">
           </div>
           <div class="col">
-            <label class="cal-label" for="winal">Winal</label>
-            <input type="text" class="form-control" name="winal" id="winal" placeholder="0" aria-label="Winal" aria-describedby="basic-addon1">
+            <label class="cal-label" for="winal-0">Winal</label>
+            <input type="text" class="form-control" name="winal" id="winal-0" placeholder="0" aria-label="Winal" aria-describedby="basic-addon1">
           </div>
           <div class="col">
-            <label class="cal-label" for="kin">Kin</label>
-            <input type="text" class="form-control" name="kin" id="kin" placeholder="0" aria-label="Kin" aria-describedby="basic-addon1">
+            <label class="cal-label" for="kin_0">Kin</label>
+            <input type="text" class="form-control" name="kin" id="kin-0" placeholder="0" aria-label="Kin" aria-describedby="basic-addon1">
           </div>
           <div class="col">
-            <label class="cal-label num-label-align" for="tzolkin-num">#</label>
-            <input type="text" class="form-control num-width" name="tzolkin-num" id="tzolkin-num" placeholder="8" aria-label="#" aria-describedby="basic-addon1">
+            <label class="cal-label num-label-align" for="tzolkin-num-0">#</label>
+            <input type="text" class="form-control num-width" name="tzolkin-num" id="tzolkin-num-0" placeholder="8" aria-label="#" aria-describedby="basic-addon1">
           </div>
           <div class="col">
-            <label class="cal-label" for="tzolkin">Tzolkin</label>
-            <input type="text" list="tzolkin" class="form-control" name="tzolkin" id="tzolkin" placeholder="Ajaw" aria-label="Tzolkin" aria-describedby="basic-addon1">
+            <label class="cal-label" for="tzolkin_0">Tzolkin</label>
+            <input type="text" list="tzolkin" class="form-control" name="tzolkin" id="tzolkin-0" placeholder="Ajaw" aria-label="Tzolkin" aria-describedby="basic-addon1">
           </div>
           <div class="col">
-            <label class="cal-label num-label-align" for="haab-num">#</label>
-            <input type="text" class="form-control num-width" name="haab-num" id="haab-num" placeholder="13" aria-label="#" aria-describedby="basic-addon1">
+            <label class="cal-label num-label-align" for="haab-num-0">#</label>
+            <input type="text" class="form-control num-width" name="haab-num" id="haab-num-0" placeholder="13" aria-label="#" aria-describedby="basic-addon1">
           </div>
           <div class="col">
-            <label class="cal-label" for="haab">Haab</label>
-            <input type="text" list="haab" class="form-control" name="haab" id="haab" placeholder="Keh" aria-label="Haab" aria-describedby="basic-addon1">
+            <label class="cal-label" for="haab-0">Haab</label>
+            <input type="text" list="haab" class="form-control" name="haab" id="haab-0" placeholder="Keh" aria-label="Haab" aria-describedby="basic-addon1">
           </div>
           <div class="form-row button-align">
-            <button type="submit" name="row_0" id="row_0" class="btn btn-primary btn-sm button-padding">Add Row</button>
+            <button type="button" name="row-0" id="row-0" class="btn btn-primary btn-sm button-padding">Add Row</button>
+          </div>
+          <div class="form-row button-align">
+            <button type="button" name="infer-0" id="infer-0" class="btn btn-success btn-sm button-padding button-infer button-margin">Infer</button>
+          </div>
+          <div class="form-row button-align">
+            <button type="button" name="convert-0" id="convert-0" class="btn btn-danger btn-sm button-padding button-convert button-margin">Convert</button>
           </div>
         </div>
       </form>
+
+      <p id=result>Result</p>
 
     </div>
 

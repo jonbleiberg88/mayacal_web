@@ -16,6 +16,9 @@ $pad-amount: 30px;
   padding: 0.46rem .75rem;
 }
 
+.button-margin {
+  margin-left: 10px;
+}
 .num-width {
   margin-left: auto;
   width: 50%;
@@ -30,6 +33,10 @@ $pad-amount: 30px;
 .cal-label {
   font-weight: bold;
 }
+
+input:focus::placeholder{
+       color:transparent;
+  }
 
 // input {
 //   display: block;
