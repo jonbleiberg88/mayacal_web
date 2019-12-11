@@ -9,20 +9,20 @@
         <h5 id="is-label">Initial Series:</h5>
       </div>
       <div class = "col-3 main-date-col">
-        <label class="cal-label main-" for="lc-1">Long Count</label>
+        <label class="cal-label main-" for="lc-0">Long Count</label>
         {{#with long_count}}
-        <p id="lc-1">{{baktun}}.{{katun}}.{{tun}}.{{winal}}.{{kin}}</p>
+        <p id="lc-0">{{baktun}}.{{katun}}.{{tun}}.{{winal}}.{{kin}}</p>
         {{/with}}
       </div>
       <div class="col-3 main-date-col">
-        <label class="cal-label" for="cr-1">Calendar Round</label>
+        <label class="cal-label" for="cr-0">Calendar Round</label>
         {{#with calendar_round}}
-        <p id="cr-1">{{#with tzolkin}}{{day_number}} {{day_name}}{{/with}}  {{#with haab}}{{month_number}} {{month_name}}{{/with}}<p>
+        <p id="cr-0">{{#with tzolkin}}{{day_number}} {{day_name}}{{/with}}  {{#with haab}}{{month_number}} {{month_name}}{{/with}}<p>
         {{/with}}
       </div>
       <div class = "col-1 g-col">
-        <label class="cal-label" for="g-1">Glyph G</label>
-        <p id="g-1">{{glyph_g}}</p>
+        <label class="cal-label" for="g-0">Glyph G</label>
+        <p id="g-0">{{glyph_g}}</p>
       </div>
       <div class="form-row button-align col-1">
         <button type="button" name="add-row-0" id="add-row-0" class="btn btn-success btn-sm button-padding edit-mode-button">Add Row</button>
@@ -137,38 +137,97 @@
 
 <script id="dist-edit" type="text/template">
   {% raw -%}
-    <div class="form-row" id={{concat "dist-row-" row_num}} data-row={{row_num}}>
+    <div class="form-row dist-edit-row" id={{concat "dist-row-" row}} data-row={{row}}>
       <div class="col-1">
-        <label class="cal-label" for={{concat "sign-" row_num}}>Sign</label>
-        <input type="text" list="sign" class="form-control" name={{concat "sign-" row_num}} id={{concat "sign-" row_num}} placeholder="+" aria-label="Bak'tun" aria-describedby="basic-addon1" {{#unless empty}}value={{sign}}{{/unless}}>
+        <label class="cal-label" for={{concat "sign-" row}}>Sign</label>
+        <input type="text" list="sign" class="form-control" id={{concat "sign-" row}} placeholder="+" aria-label="Bak'tun" aria-describedby="basic-addon1" {{#unless empty}}value={{distance_number.sign}}{{/unless}}>
       </div>
       <div class="col-1">
-        <label class="cal-label" for={{concat "baktun-" row_num}}>Bak'tun</label>
-        <input type="text" class="form-control" name={{concat "baktun-" row_num}} id={{concat "baktun-" row_num}} placeholder="0" aria-label="Bak'tun" aria-describedby="basic-addon1" {{#unless empty}}value={{baktun}}{{/unless}}>
+        <label class="cal-label" for={{concat "baktun-" row}}>Bak'tun</label>
+        <input type="text" class="form-control" id={{concat "baktun-" row}} placeholder="0" aria-label="Bak'tun" aria-describedby="basic-addon1" {{#unless empty}}value={{distance_number.baktun}}{{/unless}}>
       </div>
       <div class="col-1">
-        <label class="cal-label" for={{concat "katun-" row_num}}>K'atun</label>
-        <input type="text" class="form-control" name={{concat "katun-" row_num}} id={{concat "katun-" row_num}} placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1" {{#unless empty}}value={{katun}}{{/unless}}>
+        <label class="cal-label" for={{concat "katun-" row}}>K'atun</label>
+        <input type="text" class="form-control" id={{concat "katun-" row}} placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1" {{#unless empty}}value={{distance_number.katun}}{{/unless}}>
       </div>
       <div class="col-1">
-        <label class="cal-label" for={{concat "tun-" row_num}}>Tun</label>
-        <input type="text" class="form-control" name={{concat "tun-" row_num}} id={{concat "tun-" row_num}} placeholder="0" aria-label="Tun" aria-describedby="basic-addon1" {{#unless empty}}value={{tun}}{{/unless}}>
+        <label class="cal-label" for={{concat "tun-" row}}>Tun</label>
+        <input type="text" class="form-control" id={{concat "tun-" row}} placeholder="0" aria-label="Tun" aria-describedby="basic-addon1" {{#unless empty}}value={{distance_number.tun}}{{/unless}}>
       </div>
       <div class="col-1">
-        <label class="cal-label" for={{concat "winal-" row_num}}>Winal</label>
-        <input type="text" class="form-control" name={{concat "winal-" row_num}} id={{concat "winal-" row_num}} placeholder="0" aria-label="Winal" aria-describedby="basic-addon1" {{#unless empty}}value={{winal}}{{/unless}}>
+        <label class="cal-label" for={{concat "winal-" row}}>Winal</label>
+        <input type="text" class="form-control" id={{concat "winal-" row}} placeholder="0" aria-label="Winal" aria-describedby="basic-addon1" {{#unless empty}}value={{distance_number.winal}}{{/unless}}>
       </div>
       <div class="col-1">
-        <label class="cal-label" for={{concat "kin-" row_num}}>Kin</label>
-        <input type="text" class="form-control" name={{concat "kin-" row_num}} id={{concat "kin-" row_num}} placeholder="0" aria-label="Kin" aria-describedby="basic-addon1" {{#unless empty}}value={{kin}}{{/unless}}>
+        <label class="cal-label" for={{concat "kin-" row}}>Kin</label>
+        <input type="text" class="form-control" id={{concat "kin-" row}} placeholder="0" aria-label="Kin" aria-describedby="basic-addon1" {{#unless empty}}value={{distance_number.kin}}{{/unless}}>
       </div>
       <div class="form-row button-align">
-        <button type="button" name={{concat "enter-" row_num}} id={{concat "enter-" row_num}} class="btn btn-primary btn-sm button-padding">Enter</button>
+        <button type="button" id={{concat "enter-" row}} class="btn btn-primary btn-sm button-padding">Enter</button>
       </div>
       <div class="form-row button-align">
-        <button type="button" name={{concat "clear-" row_num}} id={{concat "clear-" row_num}} class="btn btn-danger btn-sm button-padding button-convert button-margin">Clear</button>
+        <button type="button" id={{concat "clear-" row}} class="btn btn-danger btn-sm button-padding button-convert button-margin">Clear</button>
       </div>
     </div>
+  {%- endraw %}
+</script>
+<script id="dist-entered" type="text/template">
+  {% raw -%}
+      {{#each entries}}
+        <div class="form-row dist-num-row" id={{concat "dist-row-" row}} data-row={{row}}>
+            <div class="col-2">
+              <h6 id={{concat "dist-label-" row}}>Distance Number {{row}}:</h6>
+            </div>
+            <div class = "col-3 main-date-col">
+              {{#with distance_number}}
+              <p id={{concat "lc-pre-" ../row}}>{{sign}}  {{baktun}}.{{katun}}.{{tun}}.{{winal}}.{{kin}}</p>
+              {{/with}}
+            </div>
+            <div class="col-3 main-date-col">
+              <p id={{concat "cr-pre-" row}}>--<p>
+            </div>
+            <div class = "col-1 g-col">
+              <p id={{concat "g-pre-" row}}>--</p>
+            </div>
+            <div class="form-row button-align col-1">
+            </div>
+            <div class="form-row button-align col-1">
+              <button type="button" id={{concat "edit-" row}} class="btn btn-primary btn-sm button-padding edit-mode-button">Edit</button>
+            </div>
+            <div class="form-row button-align col-1">
+            </div>
+        </div>
+
+        <div class="form-row" id={{concat "dist-res-" row}} data-row={{row}}>
+          <div class="col-2">
+            <h6 id={{concat "dist-label-" row}}>Date:</h6>
+          </div>
+          <div class = "col-3 main-date-col">
+            {{#with result}}
+            {{#with long_count}}
+            <p id={{concat "lc-" ../../row}}> {{baktun}}.{{katun}}.{{tun}}.{{winal}}.{{kin}}</p>
+            {{/with}}
+          </div>
+          <div class="col-3 main-date-col">
+            {{#with calendar_round}}
+            <p id={{concat "cr-" ../../row}}>{{#with tzolkin}}{{day_number}} {{day_name}}{{/with}}  {{#with haab}}{{month_number}} {{month_name}}{{/with}}<p>
+            {{/with}}
+          </div>
+          <div class = "col-1 g-col">
+            <p id={{concat "g-" ../row}}>{{glyph_g}}</p>
+          </div>
+          <div class="form-row button-align col-1">
+            <button type="button" id={{concat "add-row-" ../row}} class="btn btn-success btn-sm button-padding edit-mode-button">Add Row</button>
+          </div>
+          <div class="form-row button-align col-1">
+          </div>
+          <div class="form-row button-align col-1">
+          </div>
+        </div>
+        </div>
+        {{/with}}
+      {{/each}}
+
   {%- endraw %}
 </script>
 {% endblock %}
@@ -247,7 +306,7 @@
 
 
       <form id="parent-form" class="needs-validation">
-        <div class="form-row" id="initial-series-row">
+        <div class="form-row" id="initial-series-row" data-row="0">
           <div class="col">
             <label class="cal-label" for="baktun-0">Bak'tun</label>
             <input type="text" class="form-control" name="baktun" id="baktun-0" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1" pattern="[1-2]*[0-9]">
@@ -298,6 +357,7 @@
             <button type="button" name="clear-0" id="clear-0" class="btn btn-danger btn-sm button-padding button-convert button-margin">Clear</button>
           </div>
         </div>
+        <div id="dist-rows"></div>
       </form>
 
     </div>

@@ -10,10 +10,13 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+
+
 api_route = '/api/v1/'
 
 @app.route('/')
 def index():
+    session.clear()
     return render_template("index.html")
 
 @app.route('/initial_series', methods=['GET', 'POST', 'PUT'])
@@ -21,39 +24,49 @@ def initial_series():
     if request.method == "POST":
         req_json = request.get_json()
 
-        try:
-            #TODO fix server response apostophes
-            initial_series = json_to_mayadate(req_json)
+        # try:
+        #TODO fix server response apostophes
+        initial_series = json_to_mayadate(req_json)
 
-            session["initial_series"] = initial_series
+        session["initial_series"] = initial_series
 
-            response_dict = {
-                'success' : True,
-                'message' : "Initial series successfully posted"}
-            return jsonify(response_dict)
+        response_dict = {
+            'success' : True,
+            'message' : "Initial series successfully posted"}
+        return jsonify(response_dict)
 
-        except:
-            response_dict = {
-                'success' : False,
-                'message' : "Could not parse given initial series"}
+        # except:
+        #     response_dict = {
+        #         'success' : False,
+        #         'message' : "Could not parse given initial series"}
 
-            return jsonify(response_dict)
+            # return jsonify(response_dict)
 
     return
 
 @app.route('/distance_number', methods=['GET', 'POST', 'PUT'])
 def distance_number():
-    if request.method == "POST":
+    if request.method != "GET":
         req_json = request.get_json()
-        row = req_json["row_num"]
+        row = req_json["row"]
 
         initial_series = session.get("initial_series")
-        dn = json_to_distance_number(req_json["distance_number"])
-
         if session.get("distance_numbers") is None:
-            session["distance_numbers"] = [dn]
+            session["distance_numbers"] = []
+
+        dn = json_to_distance_number(req_json["distance_number"])
+        if request.method == 'PUT':
+            if row - 1  <  len(session["distance_numbers"]):
+                session["distance_numbers"][row-1] = dn
+            else:
+                session["distance_numbers"].append(dn)
+        elif request.method == 'POST':
+            session["distance_numbers"].insert(row-1, dn)
         else:
-            session["distance_numbers"][row] = dn
+            return jsonify({
+                        'success' : False,
+                        'message' : "Unrecognized request type"
+                            })
 
         dns = session["distance_numbers"]
         response_dict = {
@@ -64,7 +77,7 @@ def distance_number():
         for idx, dn in enumerate(dns):
             current_lc = current_lc + dn
             response_dict['resulting_dates'].append({
-                    'row' : idx,
+                    'row' : idx + 1,
                     'date' : current_lc.get_mayadate().to_dict()
                 })
 

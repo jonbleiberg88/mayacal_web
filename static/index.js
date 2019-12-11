@@ -428,31 +428,99 @@ const convert = () => {
 
 const addRow = (rowNum) => {
   const distanceNum = {
-    "row_num" : rowNum,
+    "row" : rowNum,
     "sign" : "+",
     "empty" : true
   }
+
+  // const isLastRow = document.querySelector("#parent-form").lastElementChild.row === (rowNum).toString();
+
+
   const distRowTemplate = Handlebars.compile(document.querySelector("#dist-edit").innerHTML);
-  document.querySelector("#parent-form").insertAdjacentHTML('beforeend', distRowTemplate(distanceNum));
-  document.querySelector("#add-row-0").hidden = true;
+
+  if(rowNum == 1) {
+    document.querySelector("#dist-rows").insertAdjacentHTML('afterbegin', distRowTemplate(distanceNum));
+  } else {
+    document.querySelector(`#dist-res-${rowNum -1}`).insertAdjacentHTML('afterend', distRowTemplate(distanceNum));
+  }
+
+  const rowAdded = document.querySelector(`#dist-row-${rowNum}`);
+  updateRowNums(rowAdded);
+
+
   document.querySelector(`#enter-${rowNum}`).onclick = () => {
-    enterDistanceNumber(rowNum);
+    enterDistanceNumber(rowNum, true);
+  }
+  document.querySelector(`#clear-${rowNum}`).onclick = () => {
+    document.querySelectorAll("#dist-row-1 input").forEach((i) => {
+      i.value = "";
+    });
+  }
+
+}
+
+const updateRowNums = (rowAdded) => {
+  console.log("updating")
+  let row = rowAdded
+  while (row.nextElementSibling) {
+    row = row.nextElementSibling;
+    let newRowNum = parseInt(row.dataset.row) + 1
+    row.dataset.row = newRowNum;
+    row.id = row.id.replace((newRowNum - 1).toString(), (newRowNum).toString());
+
+    row.querySelectorAll("p,h6,button,label,input").forEach((elem) => {
+      elem.id = elem.id.replace((newRowNum - 1).toString(), (newRowNum).toString());
+    });
+
+    if (row.classList.contains("dist-num-row")) {
+      row.querySelector(`#dist-label-${newRowNum}`).innerHTML = `Distance Number ${newRowNum}:`;
+    }
+
   }
 }
 
-const enterDistanceNumber = (rowNum) => {
+const enterDistanceNumber = (rowNum, justAdded) => {
   const request = new XMLHttpRequest();
 
-  request.open('POST', '/distance_number');
+  request.open(justAdded ? 'POST' : 'PUT', '/distance_number');
   request.setRequestHeader('Content-Type', 'application/json');
 
-  const distanceNum = retrieveDistanceNumber(rowNum);
+  const distanceNum = retrieveDistanceNumber(rowNum, "edit");
 
 
   request.onload = () => {
     const data = JSON.parse(request.responseText);
     if (data.success) {
-       console.log(data)
+      console.log(data)
+      // distanceNum.distance_number.sign = (distanceNum.distance_number.sign == 1) ? "+" : "-";
+
+      const dnParams = {
+        entries : data.resulting_dates.map((res) => {
+          let r = res.row;
+          let dn = (r == rowNum) ? distanceNum : retrieveDistanceNumber(r, "enter");
+          dn.distance_number.sign = (dn.distance_number.sign == 1) ? "+" : "-";
+          return {
+            ...dn,
+            result : res.date
+          };
+        })
+      };
+
+      document.querySelector(`#dist-row-${rowNum}`).remove();
+
+      const distRowTemplate = Handlebars.compile(document.querySelector("#dist-entered").innerHTML);
+      document.querySelector("#dist-rows").innerHTML = distRowTemplate(dnParams);
+      dnParams.entries.forEach((entry) => {
+        setDistAttrs(entry.row, entry);
+        document.querySelector(`#edit-${entry.row}`).onclick = () => {
+          editDistanceNumber(entry.row);
+        }
+
+        document.querySelector(`#add-row-${entry.row}`).onclick = () => {
+          addRow(entry.row + 1);
+        }
+      })
+
 
     } else {
       console.log(data);
@@ -464,22 +532,83 @@ const enterDistanceNumber = (rowNum) => {
   return request;
 }
 
-const retrieveDistanceNumber = (rowNum) => {
-  row = document.querySelector(`#dist-row-${rowNum}`)
+const editDistanceNumber = (rowNum) => {
+  const distanceNum = getDistAttrs(rowNum);
+  distanceNum.empty = false;
+  distanceNum.distance_number.sign = (distanceNum.distance_number.sign == 1) ? "+" : "-";
+
+  document.querySelectorAll(`#dist-res-${rowNum},#dist-row-${rowNum}`).forEach((r) => {
+    r.remove();
+  });
+
+  const distRowTemplate = Handlebars.compile(document.querySelector("#dist-edit").innerHTML);
+  const prevFormRow = (rowNum == 1) ?
+                        document.querySelector("#initial-series-row") :
+                        document.querySelector(`#dist-res-${rowNum -1}`);
+
+  prevFormRow.insertAdjacentHTML('afterend', distRowTemplate(distanceNum));
+
+  document.querySelector(`#enter-${rowNum}`).onclick = () => {
+    enterDistanceNumber(rowNum, false);
+  }
+  document.querySelector(`#clear-${rowNum}`).onclick = () => {
+    document.querySelectorAll(`#dist-row-${rowNum} input`).forEach((i) => {
+      i.value = "";
+    });
+  }
+}
+
+const retrieveDistanceNumber = (rowNum, mode) => {
+  if (mode === "edit") {
+  let r = document.querySelector(`#dist-row-${rowNum}`);
+
+    return {
+      "row" : rowNum,
+      "distance_number" : {
+        "sign" : r.querySelector(`#sign-${rowNum}`).value == "+" ?
+                    1 : r.querySelector(`#sign-${rowNum}`).value == "-" ?
+                    -1 : null,
+        "baktun" : processInt(r.querySelector(`#baktun-${rowNum}`).value),
+        "katun" : processInt(r.querySelector(`#katun-${rowNum}`).value),
+        "tun" : processInt(r.querySelector(`#tun-${rowNum}`).value),
+        "winal" : processInt(r.querySelector(`#winal-${rowNum}`).value),
+        "kin" : processInt(r.querySelector(`#kin-${rowNum}`).value),
+      }
+    }
+  } else if (mode==="enter") {
+    return getDistAttrs(rowNum);
+  }
+}
+
+const getDistAttrs = (rowNum) => {
+  row = document.querySelector(`#dist-row-${rowNum}`);
 
   return {
-    "row_num" : rowNum,
+    "row" : rowNum,
     "distance_number" : {
-      "sign" : row.querySelector(`#sign-${rowNum}`).value == "+" ?
-                  1 : row.querySelector(`#sign-${rowNum}`).value == "-" ?
-                  -1 : null,
-      "baktun" : processInt(row.querySelector(`#baktun-${rowNum}`).value),
-      "katun" : processInt(row.querySelector(`#katun-${rowNum}`).value),
-      "tun" : processInt(row.querySelector(`#tun-${rowNum}`).value),
-      "winal" : processInt(row.querySelector(`#winal-${rowNum}`).value),
-      "kin" : processInt(row.querySelector(`#kin-${rowNum}`).value),
+      "sign" : row.dataset.sign === "+" ? 1 :
+                row.dataset.sign === "-" ? -1 : null,
+      "baktun" : processInt(row.dataset.baktun),
+      "katun" : processInt(row.dataset.katun),
+      "tun" : processInt(row.dataset.tun),
+      "winal" : processInt(row.dataset.winal),
+      "kin" : processInt(row.dataset.kin),
     }
   }
+
+}
+
+const setDistAttrs = (rowNum, data) => {
+  row = document.querySelector(`#dist-row-${rowNum}`);
+
+  row.dataset.sign = data.distance_number.sign;
+  row.dataset.katun = data.distance_number.katun;
+  row.dataset.baktun = data.distance_number.baktun;
+  row.dataset.katun = data.distance_number.katun;
+  row.dataset.tun = data.distance_number.tun;
+  row.dataset.winal = data.distance_number.winal;
+  row.dataset.kin = data.distance_number.kin;
+
 }
 
 const processDateObj = (dateObj) => {
