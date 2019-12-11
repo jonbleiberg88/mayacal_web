@@ -1,14 +1,80 @@
-from flask import Flask, request, jsonify, render_template
-import mayacal as mc
 import sys
 
+from flask import Flask, request, jsonify, render_template, session
+from flask_session import Session
+import mayacal as mc
+
+
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 api_route = '/api/v1/'
 
 @app.route('/')
 def index():
     return render_template("index.html")
+
+@app.route('/initial_series', methods=['GET', 'POST', 'PUT'])
+def initial_series():
+    if request.method == "POST":
+        req_json = request.get_json()
+
+        try:
+            #TODO fix server response apostophes
+            initial_series = json_to_mayadate(req_json)
+
+            session["initial_series"] = initial_series
+
+            response_dict = {
+                'success' : True,
+                'message' : "Initial series successfully posted"}
+            return jsonify(response_dict)
+
+        except:
+            response_dict = {
+                'success' : False,
+                'message' : "Could not parse given initial series"}
+
+            return jsonify(response_dict)
+
+    return
+
+@app.route('/distance_number', methods=['GET', 'POST', 'PUT'])
+def distance_number():
+    if request.method == "POST":
+        req_json = request.get_json()
+        row = req_json["row_num"]
+
+        initial_series = session.get("initial_series")
+        dn = json_to_distance_number(req_json["distance_number"])
+
+        if session.get("distance_numbers") is None:
+            session["distance_numbers"] = [dn]
+        else:
+            session["distance_numbers"][row] = dn
+
+        dns = session["distance_numbers"]
+        response_dict = {
+            'success' : True,
+            'resulting_dates' : []
+        }
+        current_lc = initial_series.long_count
+        for idx, dn in enumerate(dns):
+            current_lc = current_lc + dn
+            response_dict['resulting_dates'].append({
+                    'row' : idx,
+                    'date' : current_lc.get_mayadate().to_dict()
+                })
+
+        return jsonify(response_dict)
+
+
+
+
+
+
 
 
 @app.route(f'{api_route}infer', methods=['POST'])
@@ -17,7 +83,8 @@ def infer():
     print(req_json, file=sys.stderr)
 
     try:
-        date = mc.mayadate.from_dict(req_json)
+
+        date = json_to_mayadate(req_json)
         poss_dates = date.infer_mayadates()
 
         poss_dates = [d.to_dict() for d in poss_dates]
@@ -93,3 +160,31 @@ def convert_from_maya():
 @app.route(f'{api_route}convert/to_maya', methods=['POST'])
 def convert_to_maya():
     return
+
+
+def json_to_mayadate(json_obj):
+    #TODO fix server response apostophes
+    day_name = json_obj['calendar_round']['tzolkin']['day_name']
+    if day_name is not None:
+        json_obj['calendar_round']['tzolkin']['day_name'] = day_name.replace("'","")
+
+    month_name = json_obj['calendar_round']['haab']['month_name']
+    if month_name is not None:
+        json_obj['calendar_round']['haab']['month_name'] = month_name.replace("'","")
+
+    date = mc.mayadate.from_dict(json_obj)
+
+    return date
+
+def json_to_distance_number(json_obj):
+    sign = json_obj['sign']
+
+    baktun = json_obj['baktun']
+    katun = json_obj['katun']
+    tun = json_obj['tun']
+    winal = json_obj['winal']
+    kin = json_obj['kin']
+
+    lc = mc.LongCount(baktun, katun, tun, winal, kin)
+
+    return mc.DistanceNumber(lc, sign)

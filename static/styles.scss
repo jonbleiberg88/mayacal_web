@@ -2,6 +2,16 @@ $pad-amount: 30px;
 
 .container {
   padding: $pad-amount;
+  padding-top: 0px;
+}
+
+#is_title {
+  padding-left: 15px;
+  padding-top: 10px;
+}
+
+#is_desc {
+  padding-left: 20px;
 }
 
 .button-align {
@@ -19,6 +29,11 @@ $pad-amount: 30px;
 .button-margin {
   margin-left: 10px;
 }
+
+.edit-mode-button {
+    margin-bottom: 10px;
+    margin-left: 40px;
+}
 .num-width {
   margin-left: auto;
   width: 50%;
@@ -34,19 +49,127 @@ $pad-amount: 30px;
   font-weight: bold;
 }
 
+.g-align {
+  width: 78%;
+}
+
+#g-col {
+  padding-left: 30px;
+}
+
 input:focus::placeholder{
        color:transparent;
   }
 
-// input {
-//   display: block;
-//   padding: 0;
-//   margin: 0;
-//   border: 0;
-//   width: 100%;
-// }
-//
-// td {
-//   margin: 0;
-//   padding: 0;
-// }
+  /* The Modal (background) */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+  }
+
+  /* Add Animation */
+  @-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+  }
+
+  @keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+  }
+
+  /* The Close Button */
+  .close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .modal-header {
+    padding: 2px 16px;
+    background-color: #81c784;
+    color: white;
+    align-items: flex-start;
+    display: block;
+    h2 {
+      padding-top: 12px;
+    }
+  }
+
+  .modal-body {
+    padding: 2px 16px;
+    .form-row {
+      padding-top: 10px;
+      padding-bottom: 30px;
+    }
+    .table-scroll {
+      border-style: solid;
+      border-color: lightgray;
+      border-width: thin;
+    }
+    table {
+      tr:hover {
+        cursor: pointer;
+      }
+      .selected { background: #ddedff; }
+    }
+
+  }
+
+  .modal-footer {
+    padding: 2px 16px;
+    background-color: inherit;
+    color: white;
+    button {
+      margin: 5px;
+    }
+  }
+
+.table-scroll {
+  overflow-y: auto;
+  max-height: 220px;
+}
+
+.is-entered {
+  margin-top: 30px;
+}
+
+.convert-label {
+  text-transform: capitalize;
+}
+
+#convert-0 {
+  margin-left: 8px;
+}

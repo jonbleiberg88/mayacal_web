@@ -5,117 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
           // Initialize new request
           const request = new XMLHttpRequest();
 
-          const processInt = (val) => {
-            if(val === ""){
-              return null;
-            } else {
-              return parseInt(val);
-            }
-          }
+          ISVals = retrieveInitialSeries();
 
-          const processStr = (val) => {
-            if(val === ""){
-              return null;
-            } else {
-              return val;
-            }
-          }
-
-          const baktun = processInt(document.querySelector('#baktun-0').value);
-          const katun = processInt(document.querySelector('#katun-0').value);
-          const tun = processInt(document.querySelector('#tun-0').value);
-          const winal = processInt(document.querySelector('#winal-0').value);
-          const kin = processInt(document.querySelector('#kin-0').value);
-
-          const tzolkin_num = processInt(document.querySelector('#tzolkin-num-0').value)
-          const tzolkin_name = processStr(document.querySelector('#tzolkin-0').value)
-
-          const haab_num = processInt(document.querySelector('#haab-num-0').value)
-          const haab_name = processStr(document.querySelector('#haab-0').value)
-
-          // alert(`${baktun}.${katun}.${tun}.${winal}.${kin} ${tzolkin_num} ${tzolkin_name} ${haab_num} ${haab_name}`);
           request.open('POST', '/api/v1/infer');
           request.setRequestHeader('Content-Type', 'application/json');
 
           // Callback function for when request completes
           request.onload = () => {
-              // console.log(request.responseText);
-              //Extract JSON data from request
+              var modal = document.getElementById("infer-modal");
+              modal.style.display = "block";
 
-              const data = JSON.parse(request.responseText);
-
-              // Update the result div
-              if (data.success) {
-                poss_dates = data.data.poss_dates
-                // document.querySelector('#result').innerHTML = data.data.poss_dates[0];
-              }
-              else {
-                  // document.querySelector('#result').innerHTML = data;
-              }
-          }
-
-          // Add data to send with request
-          request.send(JSON.stringify({
-            'long_count' : {
-              'baktun' : baktun,
-              'katun' : katun,
-              'tun' : tun,
-              'winal' : winal,
-              'kin' : kin
-            },
-            'calendar_round' : {
-              'tzolkin' : {
-                'day_number' : tzolkin_num,
-                'day_name' : tzolkin_name
-              },
-              'haab' : {
-                'month_number' : haab_num,
-                'month_name' : haab_name
-              }
-            }
-          }));
-          return false;
-      };
-
-
-      document.querySelector('.button-convert').onclick = () => {
-
-          // Initialize new request
-          const request = new XMLHttpRequest();
-
-          const processInt = (val) => {
-            if(val === ""){
-              return null;
-            } else {
-              return parseInt(val);
-            }
-          }
-
-          const processStr = (val) => {
-            if(val === ""){
-              return null;
-            } else {
-              return val;
-            }
-          }
-
-          const baktun = processInt(document.querySelector('#baktun-0').value);
-          const katun = processInt(document.querySelector('#katun-0').value);
-          const tun = processInt(document.querySelector('#tun-0').value);
-          const winal = processInt(document.querySelector('#winal-0').value);
-          const kin = processInt(document.querySelector('#kin-0').value);
-
-          const tzolkin_num = processInt(document.querySelector('#tzolkin-num-0').value)
-          const tzolkin_name = processStr(document.querySelector('#tzolkin-0').value)
-
-          const haab_num = processInt(document.querySelector('#haab-num-0').value)
-          const haab_name = processStr(document.querySelector('#haab-0').value)
-
-          request.open('POST', '/api/v1/convert/from_maya');
-          request.setRequestHeader('Content-Type', 'application/json');
-
-          // Callback function for when request completes
-          request.onload = () => {
               console.log(request.responseText);
               //Extract JSON data from request
 
@@ -123,7 +22,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
               // Update the result div
               if (data.success) {
-                // document.querySelector('#result').innerHTML = data.data.poss_dates[0];
+                const table = document.querySelector('#infer-res-table tbody');
+                possDates = data.data.poss_dates;
+                possDates.forEach((date) => {
+                  dateStrs = mayadateToString(date)
+                  const row = table.insertRow();
+
+                  setRowAttrs(row, date);
+
+
+                  const lcCell = row.insertCell(0);
+                  const crCell = row.insertCell(1);
+                  const gCell = row.insertCell(2);
+
+                  lcCell.innerHTML = dateStrs.long_count;
+                  crCell.innerHTML = dateStrs.calendar_round;
+                  gCell.innerHTML = dateStrs.glyph_g;
+
+                })
+
+                rows = document.querySelectorAll('#infer-res-table tr');
+                rows.forEach((row) => {
+                  row.onclick = () => {
+                    rs = document.querySelectorAll('#infer-res-table tr');
+                    rs.forEach((r) => {
+                      r.classList.remove('selected');
+                    })
+                    row.classList.toggle('selected');
+                  }
+                })
+
+                const selectButton = document.querySelector('#infer-select');
+                selectButton.onclick = () => {
+                  const selectedRow = document.querySelector('.selected');
+                  const table = document.querySelector('#infer-res-table tbody');
+                  table.innerHTML = ""
+
+                  const ISRow = document.querySelector("#initial-series-row");
+                  const ISVals = getDateAttrs(selectedRow);
+                  enterInitialSeries(ISVals);
+
+
+                  document.getElementById("infer-modal").style.display = "none";
+
+                }
               }
               else {
                   // document.querySelector('#result').innerHTML = data;
@@ -131,31 +73,491 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           // Add data to send with request
-          request.send(JSON.stringify({
+          request.send(JSON.stringify(ISVals));
 
-          'date' : {
-                'long_count' : {
-                'baktun' : baktun,
-                'katun' : katun,
-                'tun' : tun,
-                'winal' : winal,
-                'kin' : kin
-              },
-              'calendar_round' : {
-                'tzolkin' : {
-                  'day_number' : tzolkin_num,
-                  'day_name' : tzolkin_name
-                },
-                'haab' : {
-                  'month_number' : haab_num,
-                  'month_name' : haab_name
-                }
-              }
-          },
-          'correlation' : 584283,
-          'mode' : 'julian'
-          }));
           return false;
       };
 
+      document.querySelector("#clear-0").onclick = () => {
+        clear();
+      }
+
+      var modal = document.getElementById("infer-modal");
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      document.querySelector('#enter-0').onclick = () => {
+        const ISVals = retrieveInitialSeries();
+        const request = enterInitialSeries(ISVals);
+      }
+
+      Handlebars.registerHelper('concat', function (a, b) {
+        return `${a}${b}`;
+      });
+
+});
+
+
+
+const mayadateToString = (dateJSON) => {
+  const lc = dateJSON.long_count
+  const tz = dateJSON.calendar_round.tzolkin
+  const hb = dateJSON.calendar_round.haab
+  const glyphG = dateJSON.glyph_g
+
+  return {
+      'long_count' : `${lc.baktun}.${lc.katun}.${lc.tun}.${lc.winal}.${lc.kin}`,
+      'calendar_round' : `${tz.day_number} ${tz.day_name}  ${hb.month_number} ${hb.month_name}`,
+      'glyph_g' : glyphG
+  }
+
+}
+
+const setRowAttrs = (row, dateDict) => {
+  row.dataset.baktun = dateDict.long_count.baktun
+  row.dataset.katun = dateDict.long_count.katun
+  row.dataset.tun = dateDict.long_count.tun
+  row.dataset.winal = dateDict.long_count.winal
+  row.dataset.kin = dateDict.long_count.kin
+
+  row.dataset.tz_num = dateDict.calendar_round.tzolkin.day_number
+  row.dataset.tz_name = dateDict.calendar_round.tzolkin.day_name
+
+  row.dataset.hb_num = dateDict.calendar_round.haab.month_number
+  row.dataset.hb_name = dateDict.calendar_round.haab.month_name
+
+  row.dataset.glyph_g = dateDict.glyph_g
+
+}
+
+const processInt = (val) => {
+  if(val === ""){
+    return null;
+  } else {
+    return parseInt(val);
+  }
+}
+
+const processStr = (val) => {
+  if(val === ""){
+    return null;
+  } else {
+    return val;
+  }
+}
+
+const retrieveInitialSeries = () => {
+
+  const baktun = processInt(document.querySelector('#baktun-0').value);
+  const katun = processInt(document.querySelector('#katun-0').value);
+  const tun = processInt(document.querySelector('#tun-0').value);
+  const winal = processInt(document.querySelector('#winal-0').value);
+  const kin = processInt(document.querySelector('#kin-0').value);
+
+  const tzolkin_num = processInt(document.querySelector('#tzolkin-num-0').value)
+  const tzolkin_name = processStr(document.querySelector('#tzolkin-0').value)
+
+  const haab_num = processInt(document.querySelector('#haab-num-0').value)
+  const haab_name = processStr(document.querySelector('#haab-0').value)
+
+  const glyph_g = processStr(document.querySelector('#g-0').value)
+
+  return {
+    'long_count' : {
+      'baktun' : baktun,
+      'katun' : katun,
+      'tun' : tun,
+      'winal' : winal,
+      'kin' : kin
+    },
+    'calendar_round' : {
+      'tzolkin' : {
+        'day_number' : tzolkin_num,
+        'day_name' : tzolkin_name
+      },
+      'haab' : {
+        'month_number' : haab_num,
+        'month_name' : haab_name
+      }
+    },
+    'glyph_g' : glyph_g
+  };
+}
+
+const enterInitialSeries = (ISVals) => {
+  const request = new XMLHttpRequest();
+
+  request.open('POST', '/initial_series');
+  request.setRequestHeader('Content-Type', 'application/json');
+
+  request.onload = () => {
+    const data = JSON.parse(request.responseText);
+    if (data.success) {
+      const displayTemplate = Handlebars.compile(document.querySelector('#is-entered').innerHTML);
+      const displayRow = displayTemplate({'date' : ISVals})
+      const ISRow = document.querySelector("#initial-series-row")
+      ISRow.innerHTML = displayRow;
+      ISRow.classList.add('is-entered');
+      document.querySelectorAll(".is-tooltip").forEach((elem) => { elem.hidden = true;})
+
+      setRowAttrs(ISRow, ISVals);
+
+      document.querySelector("#add-row-0").onclick = () => {
+        addRow(1);
+      }
+
+      document.querySelector('#edit-0').onclick = () => {
+        toEditMode();
+      }
+
+      document.querySelector("#convert-0").onclick = () => {
+        convert();
+      }
+
+      document.querySelectorAll("#convert-0-div .dropdown-item").forEach((item) => {
+        item.onclick = () => {
+          document.querySelectorAll("#convert-0-div .dropdown-item").forEach((i) => {
+            i.classList.remove("active");
+          })
+          item.classList.add("active");
+          convert();
+          return false;
+        }
+      });
+
+    } else {
+      console.log(data);
+    }
+
+  }
+  request.send(JSON.stringify(ISVals));
+
+  return request;
+}
+
+const getDateAttrs = (obj) => {
+  return {
+    'long_count' : {
+      'baktun' : processInt(obj.dataset.baktun),
+      'katun' : processInt(obj.dataset.katun),
+      'tun' : processInt(obj.dataset.tun),
+      'winal' : processInt(obj.dataset.winal),
+      'kin' : processInt(obj.dataset.kin)
+    },
+    'calendar_round' : {
+      'tzolkin' : {
+        'day_number' : processInt(obj.dataset.tz_num),
+        'day_name' : processStr(obj.dataset.tz_name)
+      },
+      'haab' : {
+        'month_number' : processInt(obj.dataset.hb_num),
+        'month_name' : processStr(obj.dataset.hb_name)
+      }
+    },
+    'glyph_g' : processStr(obj.dataset.glyph_g)
+  };
+
+}
+
+const infer = () => {
+  // Initialize new request
+  const request = new XMLHttpRequest();
+
+  ISVals = retrieveInitialSeries();
+
+  request.open('POST', '/api/v1/infer');
+  request.setRequestHeader('Content-Type', 'application/json');
+
+  // Callback function for when request completes
+  request.onload = () => {
+      var modal = document.getElementById("infer-modal");
+      modal.style.display = "block";
+
+      console.log(request.responseText);
+      //Extract JSON data from request
+
+      const data = JSON.parse(request.responseText);
+
+      // Update the result div
+      if (data.success) {
+        const table = document.querySelector('#infer-res-table');
+        possDates = data.data.poss_dates;
+        possDates.forEach((date) => {
+          dateStrs = mayadateToString(date)
+          const row = table.insertRow();
+
+          setRowAttrs(row, date);
+
+
+          const lcCell = row.insertCell(0);
+          const crCell = row.insertCell(1);
+          const gCell = row.insertCell(2);
+
+          lcCell.innerHTML = dateStrs.long_count;
+          crCell.innerHTML = dateStrs.calendar_round;
+          gCell.innerHTML = dateStrs.glyph_g;
+
+        })
+
+        rows = document.querySelectorAll('#infer-res-table tr');
+        rows.forEach((row) => {
+          row.onclick = () => {
+            rs = document.querySelectorAll('#infer-res-table tr');
+            rs.forEach((r) => {
+              r.classList.remove('selected');
+            })
+            row.classList.toggle('selected');
+          }
+        })
+
+        const selectButton = document.querySelector('#infer-select');
+        selectButton.onclick = () => {
+          const selectedRow = document.querySelector('.selected');
+
+          const ISRow = document.querySelector("#initial-series-row");
+          const ISVals = getDateAttrs(selectedRow);
+          enterInitialSeries(ISVals);
+
+
+          document.getElementById("infer-modal").style.display = "none";
+
+        }
+      }
+      else {
+          // document.querySelector('#result').innerHTML = data;
+      }
+  }
+
+  // Add data to send with request
+  request.send(JSON.stringify(ISVals));
+
+  return false;
+
+}
+const toEditMode = () => {
+
+  const ISRow = document.querySelector("#initial-series-row")
+  const ISVals = getDateAttrs(ISRow);
+
+  const editTemplate = Handlebars.compile(document.querySelector("#is-edit").innerHTML);
+  const editRow = editTemplate({'date' : ISVals});
+
+  ISRow.innerHTML = editRow;
+
+  document.querySelector('#enter-0').onclick = () => {
+    const ISVals = retrieveInitialSeries();
+    const request = enterInitialSeries(ISVals);
+  }
+
+  document.querySelector('#infer-0').onclick = () => {
+    infer();
+  }
+
+  document.querySelector("#clear-0").onclick = () => {
+    clear();
+  }
+
+  return false;
+}
+
+const clear = () => {
+  document.querySelectorAll("#initial-series-row input").forEach((field) => {
+    field.value = "";
+    field.setAttribute("placeholder", "");
   });
+}
+
+const convert = () => {
+  // Initialize new request
+  const request = new XMLHttpRequest();
+
+  const ISRow = document.querySelector("#initial-series-row")
+  const ISVals = getDateAttrs(ISRow);
+
+  const mode = document.querySelector("#convert-0-div .active").dataset.mode
+
+  request.open('POST', '/api/v1/convert/from_maya');
+  request.setRequestHeader('Content-Type', 'application/json');
+
+  request.onload = () => {
+      console.log(request.responseText);
+      //Extract JSON data from request
+
+      const data = JSON.parse(request.responseText);
+
+      // Update the result div
+      if (data.success) {
+        document.querySelectorAll(".main-date-col").forEach((col) => {
+          col.classList.replace("col-3","col-2");
+        });
+        document.querySelector(".convert-col") ? document.querySelector(".convert-col").remove() : {};
+        const convertTemplate  = Handlebars.compile(document.querySelector("#convert_template").innerHTML);
+        const params = {
+          "cal_type" : mode.replace("_"," "),
+          "date" : (mode === "julian_day") ? data.date : processDateObj(data.date),
+          "isJulianDay" : (mode ==="julian_day")
+        };
+        document.querySelector(".g-col").insertAdjacentHTML('afterend', convertTemplate(params));
+
+      }
+      else {
+
+      }
+  }
+
+  // Add data to send with request
+  request.send(JSON.stringify({
+    'date' : ISVals,
+    'correlation' : 584283,
+    'mode' : mode
+  }));
+  return false;
+}
+
+const addRow = (rowNum) => {
+  const distanceNum = {
+    "row_num" : rowNum,
+    "sign" : "+",
+    "empty" : true
+  }
+  const distRowTemplate = Handlebars.compile(document.querySelector("#dist-edit").innerHTML);
+  document.querySelector("#parent-form").insertAdjacentHTML('beforeend', distRowTemplate(distanceNum));
+  document.querySelector("#add-row-0").hidden = true;
+  document.querySelector(`#enter-${rowNum}`).onclick = () => {
+    enterDistanceNumber(rowNum);
+  }
+}
+
+const enterDistanceNumber = (rowNum) => {
+  const request = new XMLHttpRequest();
+
+  request.open('POST', '/distance_number');
+  request.setRequestHeader('Content-Type', 'application/json');
+
+  const distanceNum = retrieveDistanceNumber(rowNum);
+
+
+  request.onload = () => {
+    const data = JSON.parse(request.responseText);
+    if (data.success) {
+       console.log(data)
+
+    } else {
+      console.log(data);
+    }
+
+  }
+  request.send(JSON.stringify(distanceNum));
+
+  return request;
+}
+
+const retrieveDistanceNumber = (rowNum) => {
+  row = document.querySelector(`#dist-row-${rowNum}`)
+
+  return {
+    "row_num" : rowNum,
+    "distance_number" : {
+      "sign" : row.querySelector(`#sign-${rowNum}`).value == "+" ?
+                  1 : row.querySelector(`#sign-${rowNum}`).value == "-" ?
+                  -1 : null,
+      "baktun" : processInt(row.querySelector(`#baktun-${rowNum}`).value),
+      "katun" : processInt(row.querySelector(`#katun-${rowNum}`).value),
+      "tun" : processInt(row.querySelector(`#tun-${rowNum}`).value),
+      "winal" : processInt(row.querySelector(`#winal-${rowNum}`).value),
+      "kin" : processInt(row.querySelector(`#kin-${rowNum}`).value),
+    }
+  }
+}
+
+const processDateObj = (dateObj) => {
+  dateObj.month = monthFromNum(dateObj.month);
+  dateObj.year = (dateObj.year > 0) ? `${dateObj.year} CE` : `${-1 *dateObj.year + 1} BCE`;
+  switch(dateObj.day % 10) {
+    case 1:
+      (dateObj.day === 11) ?
+        dateObj.day = "11th":
+        dateObj.day = `${dateObj.day}st`;
+      break;
+    case 2:
+      (dateObj.day === 12) ?
+        dateObj.day = "12th":
+        dateObj.day = `${dateObj.day}nd`;
+      break;
+    case 3:
+      (dateObj.day === 13) ?
+        dateObj.day = "13th":
+        dateObj.day = `${dateObj.day}rd`;
+      break;
+    default:
+      dateObj.day = `${dateObj.day}th`;
+      break;
+  }
+  return dateObj;
+}
+
+const monthFromNum = (num) => {
+  let month = "";
+  switch(num) {
+    case 1:
+      month = "Jan";
+      break;
+
+    case 2:
+      month = "Feb";
+      break;
+
+    case 3:
+      month = "Mar";
+      break;
+
+    case 4:
+      month = "Apr";
+      break;
+
+    case 5:
+      month = "May";
+      break;
+
+    case 6:
+      month = "Jun";
+      break;
+
+    case 7:
+      month = "Jul";
+      break;
+
+    case 8:
+      month = "Aug";
+      break;
+
+    case 9:
+      month = "Sep";
+      break;
+
+    case 10:
+      month = "Oct";
+      break;
+
+    case 11:
+      month = "Nov";
+      break;
+
+    case 12:
+      month = "Jun";
+      break;
+  }
+  return month;
+}

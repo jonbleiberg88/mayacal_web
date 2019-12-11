@@ -1,33 +1,187 @@
 {% extends "layout.html" %}
 
+{% block templates %}
+<script id="is-entered" type="text/template">
+  {% raw -%}
+      {{#with date}}
+      <div class="col-2">
+        <label class="cal-label" for="is-label">_____</label>
+        <h5 id="is-label">Initial Series:</h5>
+      </div>
+      <div class = "col-3 main-date-col">
+        <label class="cal-label main-" for="lc-1">Long Count</label>
+        {{#with long_count}}
+        <p id="lc-1">{{baktun}}.{{katun}}.{{tun}}.{{winal}}.{{kin}}</p>
+        {{/with}}
+      </div>
+      <div class="col-3 main-date-col">
+        <label class="cal-label" for="cr-1">Calendar Round</label>
+        {{#with calendar_round}}
+        <p id="cr-1">{{#with tzolkin}}{{day_number}} {{day_name}}{{/with}}  {{#with haab}}{{month_number}} {{month_name}}{{/with}}<p>
+        {{/with}}
+      </div>
+      <div class = "col-1 g-col">
+        <label class="cal-label" for="g-1">Glyph G</label>
+        <p id="g-1">{{glyph_g}}</p>
+      </div>
+      <div class="form-row button-align col-1">
+        <button type="button" name="add-row-0" id="add-row-0" class="btn btn-success btn-sm button-padding edit-mode-button">Add Row</button>
+      </div>
+      <div class="form-row button-align col-1">
+        <button type="button" name="edit-0" id="edit-0" class="btn btn-primary btn-sm button-padding edit-mode-button">Edit</button>
+      </div>
+      <div class="form-row button-align col-1">
+        <div id="convert-0-div" class="btn-group">
+          <button type="button" id="convert-0" class="btn btn-sm btn-danger button-padding edit-mode-button">Convert</button>
+          <button type="button" class="btn btn-danger btn-sm dropdown-toggle dropdown-toggle-split button-padding edit-mode-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <h6 class="dropdown-header">Mode</h6>
+            <a class="dropdown-item active" href="#" data-mode="gregorian">Gregorian</a>
+            <!-- <div class="dropdown-divider"></div> -->
+            <a class="dropdown-item" href="#" data-mode="julian">Julian</a>
+            <!-- <div class="dropdown-divider"></div> -->
+            <a class="dropdown-item" href="#" data-mode="julian_day">Julian Day</a>
+          </div>
+      </div>
+
+
+      </div>
+      {{/with}}
+  {%- endraw %}
+</script>
+
+
+<script  id="is-edit" type="text/template">
+  {% raw -%}
+  {{#with date}}
+  {{#with long_count}}
+  <div class="col">
+    <label class="cal-label" for="baktun-0">Bak'tun</label>
+    <input type="text" class="form-control" name="baktun" id="baktun-0" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1" value={{baktun}}>
+  </div>
+  <div class="col">
+    <label class="cal-label" for="katun-0">K'atun</label>
+    <input type="text" class="form-control" name="katun" id="katun-0" placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1" value={{katun}}>
+  </div>
+  <div class="col">
+    <label class="cal-label" for="tun-0">Tun</label>
+    <input type="text" class="form-control" name="tun" id="tun-0" placeholder="0" aria-label="Tun" aria-describedby="basic-addon1" value={{tun}}>
+  </div>
+  <div class="col">
+    <label class="cal-label" for="winal-0">Winal</label>
+    <input type="text" class="form-control" name="winal" id="winal-0" placeholder="0" aria-label="Winal" aria-describedby="basic-addon1" value={{winal}}>
+  </div>
+  <div class="col">
+    <label class="cal-label" for="kin_0">Kin</label>
+    <input type="text" class="form-control" name="kin" id="kin-0" placeholder="0" aria-label="Kin" aria-describedby="basic-addon1" value={{kin}}>
+  </div>
+  {{/with}}
+  {{#with calendar_round}}
+  {{#with tzolkin}}
+  <div class="col">
+    <label class="cal-label num-label-align" for="tzolkin-num-0">#</label>
+    <input type="text" class="form-control num-width" name="tzolkin-num" id="tzolkin-num-0" placeholder="8" aria-label="#" aria-describedby="basic-addon1" value={{day_number}}>
+  </div>
+  <div class="col">
+    <label class="cal-label" for="tzolkin_0">Tzolkin</label>
+    <input type="text" list="tzolkin" class="form-control" name="tzolkin" id="tzolkin-0" placeholder="Ajaw" aria-label="Tzolkin" aria-describedby="basic-addon1" value={{day_name}}>
+  </div>
+  {{/with}}
+  {{#with haab}}
+  <div class="col">
+    <label class="cal-label num-label-align" for="haab-num-0">#</label>
+    <input type="text" class="form-control num-width" name="haab-num" id="haab-num-0" placeholder="13" aria-label="#" aria-describedby="basic-addon1" value={{month_number}}>
+  </div>
+  <div class="col">
+    <label class="cal-label" for="haab-0">Haab</label>
+    <input type="text" list="haab" class="form-control" name="haab" id="haab-0" placeholder="Keh" aria-label="Haab" aria-describedby="basic-addon1" value={{month_name}}>
+  </div>
+  {{/with}}
+  {{/with}}
+  <div class="col" id="g-col">
+    <label class="cal-label" for="g-0">Glyph G</label>
+    <input type="text" list="glyph_g" class="form-control g-align" name="g-0" id="g-0" placeholder="G9" aria-label="Glyph G" aria-describedby="basic-addon1" value={{glyph_g}}>
+  </div>
+  <div class="form-row button-align">
+    <button type="button" name="enter-0" id="enter-0" class="btn btn-primary btn-sm button-padding">Enter</button>
+  </div>
+  <div class="form-row button-align">
+    <button type="button" name="infer-0" id="infer-0" class="btn btn-success btn-sm button-padding button-infer button-margin">Infer</button>
+  </div>
+  <div class="form-row button-align">
+    <button type="button" name="clear-0" id="clear-0" class="btn btn-danger btn-sm button-padding button-convert button-margin">Clear</button>
+  </div>
+  {{/with}}
+  {%- endraw %}
+</script>
+
+<script id="convert_template" type="text/template">
+  {% raw -%}
+    <div class="col-2 convert-col">
+      <label class="cal-label convert-label" for="conv-date-0">{{cal_type}}</label>
+      {{#if isJulianDay}}
+        {{#with date}}
+        <p id="conv-date-0">{{day_number}}<p>
+        {{/with}}
+      {{else}}
+        {{#with date}}
+        <p id="conv-date-0">{{month}} {{day}}, {{year}}<p>
+        {{/with}}
+      {{/if}}
+    </div>
+
+  {%- endraw %}
+</script>
+
+<script id="dist-edit" type="text/template">
+  {% raw -%}
+    <div class="form-row" id={{concat "dist-row-" row_num}} data-row={{row_num}}>
+      <div class="col-1">
+        <label class="cal-label" for={{concat "sign-" row_num}}>Sign</label>
+        <input type="text" list="sign" class="form-control" name={{concat "sign-" row_num}} id={{concat "sign-" row_num}} placeholder="+" aria-label="Bak'tun" aria-describedby="basic-addon1" {{#unless empty}}value={{sign}}{{/unless}}>
+      </div>
+      <div class="col-1">
+        <label class="cal-label" for={{concat "baktun-" row_num}}>Bak'tun</label>
+        <input type="text" class="form-control" name={{concat "baktun-" row_num}} id={{concat "baktun-" row_num}} placeholder="0" aria-label="Bak'tun" aria-describedby="basic-addon1" {{#unless empty}}value={{baktun}}{{/unless}}>
+      </div>
+      <div class="col-1">
+        <label class="cal-label" for={{concat "katun-" row_num}}>K'atun</label>
+        <input type="text" class="form-control" name={{concat "katun-" row_num}} id={{concat "katun-" row_num}} placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1" {{#unless empty}}value={{katun}}{{/unless}}>
+      </div>
+      <div class="col-1">
+        <label class="cal-label" for={{concat "tun-" row_num}}>Tun</label>
+        <input type="text" class="form-control" name={{concat "tun-" row_num}} id={{concat "tun-" row_num}} placeholder="0" aria-label="Tun" aria-describedby="basic-addon1" {{#unless empty}}value={{tun}}{{/unless}}>
+      </div>
+      <div class="col-1">
+        <label class="cal-label" for={{concat "winal-" row_num}}>Winal</label>
+        <input type="text" class="form-control" name={{concat "winal-" row_num}} id={{concat "winal-" row_num}} placeholder="0" aria-label="Winal" aria-describedby="basic-addon1" {{#unless empty}}value={{winal}}{{/unless}}>
+      </div>
+      <div class="col-1">
+        <label class="cal-label" for={{concat "kin-" row_num}}>Kin</label>
+        <input type="text" class="form-control" name={{concat "kin-" row_num}} id={{concat "kin-" row_num}} placeholder="0" aria-label="Kin" aria-describedby="basic-addon1" {{#unless empty}}value={{kin}}{{/unless}}>
+      </div>
+      <div class="form-row button-align">
+        <button type="button" name={{concat "enter-" row_num}} id={{concat "enter-" row_num}} class="btn btn-primary btn-sm button-padding">Enter</button>
+      </div>
+      <div class="form-row button-align">
+        <button type="button" name={{concat "clear-" row_num}} id={{concat "clear-" row_num}} class="btn btn-danger btn-sm button-padding button-convert button-margin">Clear</button>
+      </div>
+    </div>
+  {%- endraw %}
+</script>
+{% endblock %}
+
 {% block home_active %}"nav-item active"{% endblock %}
 {% block how_active %}"nav-item"{% endblock %}
 {% block cal_active %}"nav-item"{% endblock %}
 {% block faq_active %}"nav-item"{% endblock %}
 
 {% block body %}
-  <div class="col-12" style="padding:30px">
-      <!-- <div class="col">
-        <label class="control-label" for="baktun">Bak'tun</label>
-
-        <input type="text" class="form-control w-1" name="baktun" id="baktun" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1">
-      </div>
-      <div class="col">
-        <label class="control-label" for="katun">K'atun</label>
-        <input type="text" class="form-control w-1" name="katun" id="katun" placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1">
-      </div>
-      <div class="col">
-        <label class="control-label" for="tun">Tun</label>
-        <input type="text" class="form-control w-1" name="tun" id="tun" placeholder="0" aria-label="Tun" aria-describedby="basic-addon1">
-      </div>
-      <div class="col">
-        <label class="control-label" for="winal">Winal</label>
-        <input type="text" class="form-control w-1" name="winal" id="winal" placeholder="0" aria-label="Winal" aria-describedby="basic-addon1">
-      </div>
-      <div class="col">
-        <label class="control-label" for="kin">Kin</label>
-        <input type="text" class="form-control w-1" name="kin" id="kin" placeholder="0" aria-label="Kin" aria-describedby="basic-addon1">
-      </div> -->
+<h3 id="is_title" class="is-tooltip">Step 1: Initial Series</h3>
+<p id="is_desc" class="is-tooltip">Start by entering the initial series information below:</p>
+  <div class="col-12 container">
       <datalist id="tzolkin">
         <option value="Imix">
         <option value="Ik'">
@@ -73,58 +227,27 @@
         <option value="Wayeb">
       </datalist>
 
+      <datalist id="glyph_g">
+        <option value="G1">
+        <option value="G2">
+        <option value="G3">
+        <option value="G4">
+        <option value="G5">
+        <option value="G6">
+        <option value="G7">
+        <option value="G8">
+        <option value="G9">
+      </datalist>
 
-      <!-- <table class="table table-bordered border-right-0 border-bottom-0 border-top-0">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Bak'tun</th>
-            <th scope="col">Katun</th>
-            <th scope="col">Tun</th>
-            <th scope="col">Winal</th>
-            <th scope="col">Kin</th>
-            <th scope="col">#</th>
-            <th scope="col">Tzolkin</th>
-            <th scope="col">#</th>
-            <th scope="col">Haab</th>
-            <th scope="col" class="border-0"></th>
+      <datalist id="sign">
+        <option value="+">
+        <option value="-">
+      </datalist>
 
 
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>
-              <input type="text" class="form-control" placeholder="9" required pattern="[1-2]*[0-9]">
-              <div class="invalid-feedback">
-                  0-9
-              </div>
-            </td>
-            <td><input type="text" class="form-control" placeholder="0"/></td>
-            <td><input type="text" class="form-control" placeholder="0"/></td>
-            <td><input type="text" class="form-control" placeholder="0"/></td>
-            <td><input type="text" class="form-control" placeholder="0"/></td>
-            <td><input type="text" class="form-control" placeholder="8"/></td>
-            <td>
-              <input type="text" class="form-control" list="tzolkin" id="tzolkin_0" placeholder="Ajaw">
 
-            </td>
-            <td><input type="text" class="form-control" placeholder="13"/></td>
-            <td>
-              <input type="text" list="haab" class="form-control" placeholder="Keh"/>
-
-            </td>
-
-            <td class=border-0><button type="button" class="btn btn-primary btn-sm">Add Row</button></td>
-
-          </tr>
-
-        </tbody>
-      </table> -->
-
-      <form class="needs-validation">
-        <div class="form-row">
+      <form id="parent-form" class="needs-validation">
+        <div class="form-row" id="initial-series-row">
           <div class="col">
             <label class="cal-label" for="baktun-0">Bak'tun</label>
             <input type="text" class="form-control" name="baktun" id="baktun-0" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1" pattern="[1-2]*[0-9]">
@@ -161,66 +284,74 @@
             <label class="cal-label" for="haab-0">Haab</label>
             <input type="text" list="haab" class="form-control" name="haab" id="haab-0" placeholder="Keh" aria-label="Haab" aria-describedby="basic-addon1">
           </div>
+          <div class="col" id="g-col">
+            <label class="cal-label" for="g-0">Glyph G</label>
+            <input type="text" list="glyph_g" class="form-control g-align" name="g-0" id="g-0" placeholder="G9" aria-label="Glyph G" aria-describedby="basic-addon1">
+          </div>
           <div class="form-row button-align">
-            <button type="button" name="row-0" id="row-0" class="btn btn-primary btn-sm button-padding">Add Row</button>
+            <button type="button" name="enter-0" id="enter-0" class="btn btn-primary btn-sm button-padding">Enter</button>
           </div>
           <div class="form-row button-align">
             <button type="button" name="infer-0" id="infer-0" class="btn btn-success btn-sm button-padding button-infer button-margin">Infer</button>
           </div>
           <div class="form-row button-align">
-            <button type="button" name="convert-0" id="convert-0" class="btn btn-danger btn-sm button-padding button-convert button-margin">Convert</button>
+            <button type="button" name="clear-0" id="clear-0" class="btn btn-danger btn-sm button-padding button-convert button-margin">Clear</button>
           </div>
         </div>
       </form>
 
-      <p id=result>Result</p>
-
     </div>
 
+    <!-- The Modal -->
+    <div id="infer-modal" class="modal">
 
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Infer missing components</h2>
+    </div>
+    <div class="modal-body">
 
-    <!--
-
-    <form>
-      <div class="row">
-        <div class="col">
-          <label for="baktun">Bak'tun</label>
+      <div class="form-row">
+        <div class="col-4">
+          <h5>Filter results</h5>
         </div>
-        <div class="col">
-          <label for="katun">K'atun</label>
+        <div class="col-1">
+          <label for="infer-min">From:</label>
         </div>
-        <div class="col">
-          <label for="tun">Tun</label>
+        <div class="col-3">
+          <input id="infer-min" type="text" class="form-control" placeholder="9.0.0.0.0">
         </div>
-        <div class="col">
-          <label for="winal">Winal</label>
+        <div class="col-1">
+          <label for="infer-min">To:</label>
         </div>
-        <div class="col">
-          <label for="kin">Kin</label>
+        <div class="col-3">
+          <input id="infer-max" type="text" class="form-control" placeholder="10.0.0.0.0">
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <input type="text" class="form-control" name="baktun" id="baktun" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1">
-        </div>
-        <div class="col">
-          <input type="text" class="form-control" name="katun" id="katun" placeholder="9" aria-label="K'atun" aria-describedby="basic-addon1">
-        </div>
-        <div class="col">
-          <input type="text" class="form-control" name="tun" id="tun" placeholder="9" aria-label="Tun" aria-describedby="basic-addon1">
-        </div>
-        <div class="col">
-          <input type="text" class="form-control" name="winal" id="winal" placeholder="9" aria-label="Winal" aria-describedby="basic-addon1">
-        </div>
-        <div class="col">
-          <input type="text" class="form-control" name="kin" id="kin" placeholder="9" aria-label="Kin" aria-describedby="basic-addon1">
-        </div>
-        <div class="col">
-          <label for="add">Add</label>
-          <button class="btn btn-primary" id="add">Add</button>
-        </div>
-    </form> -->
+      <div class="table-scroll">
+        <table class ="table table-sm" id="infer-res-table">
+          <thead>
+            <tr>
+              <th scope="col">Long Count</th>
+              <th scope="col">Calendar Round</th>
+              <th scope="col">Glyph G</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button id='infer-select' class="btn btn-primary" type=button>Select</button>
+    </div>
   </div>
+
+</div>
+</div>
 
 
 
