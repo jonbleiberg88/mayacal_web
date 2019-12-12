@@ -173,3 +173,30 @@ input:focus::placeholder{
 #convert-0 {
   margin-left: 8px;
 }
+
+.dist-num-row {
+  border-bottom: black;
+  border-bottom-style: solid;
+  border-bottom-width: thin;
+  margin-top: 10px;
+}
+
+.dist-res-row {
+  margin-top: 10px;
+}
+
+.invalid-input {
+  border: red;
+  border-width: 1px;
+  border-style: solid;
+  :focus {
+    border: red !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+  }
+}
+.invalid-input:focus {
+  border: red !important;
+  border-width: 1px;
+  border-style: solid;
+}

@@ -120,14 +120,16 @@
 <script id="convert_template" type="text/template">
   {% raw -%}
     <div class="col-2 convert-col">
+      {{#if isInitialSeries}}
       <label class="cal-label convert-label" for="conv-date-0">{{cal_type}}</label>
+      {{/if}}
       {{#if isJulianDay}}
         {{#with date}}
-        <p id="conv-date-0">{{day_number}}<p>
+        <p id={{concat "conv-date-" ../row}}>{{day_number}}<p>
         {{/with}}
       {{else}}
         {{#with date}}
-        <p id="conv-date-0">{{month}} {{day}}, {{year}}<p>
+        <p id={{concat "conv-date-" ../row}}>{{month}} {{day}}, {{year}}<p>
         {{/with}}
       {{/if}}
     </div>
@@ -198,7 +200,7 @@
             </div>
         </div>
 
-        <div class="form-row" id={{concat "dist-res-" row}} data-row={{row}}>
+        <div class="form-row dist-res-row" id={{concat "dist-res-" row}} data-row={{row}}>
           <div class="col-2">
             <h6 id={{concat "dist-label-" row}}>Date:</h6>
           </div>
@@ -305,27 +307,42 @@
 
 
 
-      <form id="parent-form" class="needs-validation">
+      <form id="parent-form" class="needs-validation" data-converted="false" novalidate>
         <div class="form-row" id="initial-series-row" data-row="0">
           <div class="col">
             <label class="cal-label" for="baktun-0">Bak'tun</label>
-            <input type="text" class="form-control" name="baktun" id="baktun-0" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1" pattern="[1-2]*[0-9]">
+            <input type="text" class="form-control baktun" name="baktun" id="baktun-0" placeholder="9" aria-label="Bak'tun" aria-describedby="basic-addon1" pattern="[1-2]*[0-9]">
+            <div class="invalid-feedback">
+              Enter a number from 0 to 19.
+            </div>
           </div>
           <div class="col">
             <label class="cal-label" for="katun-0">K'atun</label>
             <input type="text" class="form-control" name="katun" id="katun-0" placeholder="0" aria-label="K'atun" aria-describedby="basic-addon1">
+            <div class="invalid-feedback">
+              Enter a number from 0 to 19.
+            </div>
           </div>
           <div class="col">
             <label class="cal-label" for="tun-0">Tun</label>
             <input type="text" class="form-control" name="tun" id="tun-0" placeholder="0" aria-label="Tun" aria-describedby="basic-addon1">
+            <div class="invalid-feedback">
+              Enter a number from 0 to 19.
+            </div>
           </div>
           <div class="col">
             <label class="cal-label" for="winal-0">Winal</label>
             <input type="text" class="form-control" name="winal" id="winal-0" placeholder="0" aria-label="Winal" aria-describedby="basic-addon1">
+            <div class="invalid-feedback">
+              Enter a number from 0 to 17.
+            </div>
           </div>
           <div class="col">
             <label class="cal-label" for="kin_0">Kin</label>
             <input type="text" class="form-control" name="kin" id="kin-0" placeholder="0" aria-label="Kin" aria-describedby="basic-addon1">
+            <div class="invalid-feedback">
+              Enter a number from 0 to 19.
+            </div>
           </div>
           <div class="col">
             <label class="cal-label num-label-align" for="tzolkin-num-0">#</label>

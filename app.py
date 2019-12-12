@@ -169,6 +169,67 @@ def convert_from_maya():
 
     return jsonify(response_dict)
 
+@app.route(f'{api_route}convert/batch/from_maya', methods=['POST'])
+def batch_convert_from_maya():
+    req_json = request.get_json()
+    print(req_json, file=sys.stderr)
+
+    # try:
+    correlation = req_json.get('correlation')
+    mode = req_json.get('mode')
+
+    response_dict = {
+        'success' : True,
+        'correlation' : correlation,
+        'mode' : mode,
+        'dates' : []
+    }
+
+    date_dicts = req_json.get('dates')
+
+    for date_dict in date_dicts:
+
+        date = mc.mayadate.from_dict(date_dict)
+
+        if mode == 'julian':
+            jd = date.to_julian(correlation=correlation)
+
+            response_dict['dates'].append({
+                'day' : jd.day,
+                'month' : jd.month,
+                'year': jd.year
+            })
+
+        elif mode == 'gregorian':
+            gd = date.to_gregorian(correlation=correlation)
+
+            response_dict['dates'].append({
+                'day' : gd.day,
+                'month' : gd.month,
+                'year': gd.year
+            })
+
+        elif mode == 'julian_day':
+            jdn = date.to_julian_day(correlation=correlation)
+
+            response_dict['dates'].append({
+                'day_number' : jdn
+            })
+
+        else:
+            response_dict['success'] = False
+            response_dict['message'] = f"Invalid mode {mode} - must be one of 'julian', 'gregorian', or 'julian_day'"
+
+    # except:
+    #     response_dict = {
+    #         'success' : False,
+    #         'message' : 'Could not convert the given date'
+    #     }
+
+
+    return jsonify(response_dict)
+
+
 
 @app.route(f'{api_route}convert/to_maya', methods=['POST'])
 def convert_to_maya():

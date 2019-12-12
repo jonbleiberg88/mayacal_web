@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   dateStrs = mayadateToString(date)
                   const row = table.insertRow();
 
-                  setRowAttrs(row, date);
+                  setDateAttrs(row, date);
 
 
                   const lcCell = row.insertCell(0);
@@ -107,6 +107,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${a}${b}`;
       });
 
+      // document.querySelector('.baktun').addEventListener('keyup', (e) => {
+      //   let currentVal = e.target.value;
+      //   const re = /^\d*$/;
+      //   const valid = (re.test(currentVal) || parseInt(currentVal) > 19);
+      //   if (!valid){
+      //     document.querySelector('.baktun').nextElementSibling.style.display = "flex";
+      //     e.target.classList.add("invalid-input");
+      //   } else {
+      //     document.querySelector('.baktun').nextElementSibling.style.display = "none";
+      //     e.target.classList.remove("invalid-input");
+      //   };
+      // 
+      // }, false);
+
 });
 
 
@@ -125,7 +139,7 @@ const mayadateToString = (dateJSON) => {
 
 }
 
-const setRowAttrs = (row, dateDict) => {
+const setDateAttrs = (row, dateDict) => {
   row.dataset.baktun = dateDict.long_count.baktun
   row.dataset.katun = dateDict.long_count.katun
   row.dataset.tun = dateDict.long_count.tun
@@ -212,7 +226,7 @@ const enterInitialSeries = (ISVals) => {
       ISRow.classList.add('is-entered');
       document.querySelectorAll(".is-tooltip").forEach((elem) => { elem.hidden = true;})
 
-      setRowAttrs(ISRow, ISVals);
+      setDateAttrs(ISRow, ISVals);
 
       document.querySelector("#add-row-0").onclick = () => {
         addRow(1);
@@ -236,6 +250,10 @@ const enterInitialSeries = (ISVals) => {
           return false;
         }
       });
+
+      if (document.querySelector("#parent-form").dataset.converted === "true") {
+        convert();
+      }
 
     } else {
       console.log(data);
@@ -298,7 +316,7 @@ const infer = () => {
           dateStrs = mayadateToString(date)
           const row = table.insertRow();
 
-          setRowAttrs(row, date);
+          setDateAttrs(row, date);
 
 
           const lcCell = row.insertCell(0);
@@ -383,12 +401,15 @@ const convert = () => {
   // Initialize new request
   const request = new XMLHttpRequest();
 
-  const ISRow = document.querySelector("#initial-series-row")
-  const ISVals = getDateAttrs(ISRow);
+  // const ISRow = document.querySelector("#initial-series-row")
+  // const ISVals = getDateAttrs(ISRow);
+  const dateVals = Array.from(document.querySelectorAll("#initial-series-row, .dist-res-row"), (row) => {
+    return getDateAttrs(row);
+  })
 
   const mode = document.querySelector("#convert-0-div .active").dataset.mode
 
-  request.open('POST', '/api/v1/convert/from_maya');
+  request.open('POST', '/api/v1/convert/batch/from_maya');
   request.setRequestHeader('Content-Type', 'application/json');
 
   request.onload = () => {
@@ -402,14 +423,27 @@ const convert = () => {
         document.querySelectorAll(".main-date-col").forEach((col) => {
           col.classList.replace("col-3","col-2");
         });
-        document.querySelector(".convert-col") ? document.querySelector(".convert-col").remove() : {};
+        document.querySelectorAll(".convert-col").forEach((col) => {
+          col.remove();
+        });
         const convertTemplate  = Handlebars.compile(document.querySelector("#convert_template").innerHTML);
-        const params = {
-          "cal_type" : mode.replace("_"," "),
-          "date" : (mode === "julian_day") ? data.date : processDateObj(data.date),
-          "isJulianDay" : (mode ==="julian_day")
-        };
-        document.querySelector(".g-col").insertAdjacentHTML('afterend', convertTemplate(params));
+        const params = data.dates.map((date, idx) => {
+          return {
+            "cal_type" : mode.replace("_"," "),
+            "date" : (mode === "julian_day") ? date : processDateObj(date),
+            "isJulianDay" : (mode === "julian_day"),
+            "isInitialSeries" : (idx === 0)
+          }
+        });
+
+        document.querySelectorAll("#initial-series-row .g-col, .dist-res-row  .g-col").forEach((col, idx) => {
+          col.insertAdjacentHTML('afterend', convertTemplate(params[idx]));
+        });
+        document.querySelectorAll(".dist-num-row .g-col").forEach((col) => {
+          col.insertAdjacentHTML('afterend', '<div class="col-2 convert-col"></div>');
+        })
+
+        document.querySelector("#parent-form").dataset.converted = true;
 
       }
       else {
@@ -419,7 +453,7 @@ const convert = () => {
 
   // Add data to send with request
   request.send(JSON.stringify({
-    'date' : ISVals,
+    'dates' : dateVals,
     'correlation' : 584283,
     'mode' : mode
   }));
@@ -512,6 +546,8 @@ const enterDistanceNumber = (rowNum, justAdded) => {
       document.querySelector("#dist-rows").innerHTML = distRowTemplate(dnParams);
       dnParams.entries.forEach((entry) => {
         setDistAttrs(entry.row, entry);
+        setDateAttrs(document.querySelector(`#dist-res-${entry.row}`), entry.result);
+
         document.querySelector(`#edit-${entry.row}`).onclick = () => {
           editDistanceNumber(entry.row);
         }
@@ -521,6 +557,9 @@ const enterDistanceNumber = (rowNum, justAdded) => {
         }
       })
 
+      if (document.querySelector("#parent-form").dataset.converted === "true") {
+        convert();
+      }
 
     } else {
       console.log(data);
