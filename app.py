@@ -189,7 +189,7 @@ def batch_convert_from_maya():
 
     for date_dict in date_dicts:
 
-        date = mc.mayadate.from_dict(date_dict)
+        date = mc.mayadate.from_dict(remove_apostrophes(date_dict))
 
         if mode == 'julian':
             jd = date.to_julian(correlation=correlation)
@@ -295,3 +295,9 @@ def hb_add_apostrophes(month_name):
     apost_dict["Kumku"] = "Kumk'u"
 
     return apost_dict[month_name]
+
+def remove_apostrophes(date_dict):
+    date_dict["calendar_round"]["tzolkin"]["day_name"] = date_dict["calendar_round"]["tzolkin"]["day_name"].replace("'","")
+    date_dict["calendar_round"]["haab"]["month_name"] = date_dict["calendar_round"]["haab"]["month_name"].replace("'","")
+
+    return date_dict
