@@ -155,10 +155,10 @@ input:focus::placeholder {
   border-color: lightgray;
   border-width: thin;
 }
-.modal-body table tr:hover {
+.modal-body table tbody tr:hover {
   cursor: pointer;
 }
-.modal-body table .selected {
+.modal-body table tbody .selected {
   background: #ddedff;
 }
 

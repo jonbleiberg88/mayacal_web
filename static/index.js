@@ -23,13 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
               // Update the result div
               if (data.success) {
                 const table = document.querySelector('#infer-res-table tbody');
-                possDates = data.data.poss_dates;
+                const possDates = data.data.poss_dates;
                 possDates.forEach((date) => {
-                  dateStrs = mayadateToString(date)
+                  const dateStrs = mayadateToString(date)
                   const row = table.insertRow();
 
                   setDateAttrs(row, date);
-
+                  row.dataset.total_kin = lcStrToKin(dateStrs.long_count);
 
                   const lcCell = row.insertCell(0);
                   const crCell = row.insertCell(1);
@@ -41,10 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 })
 
-                rows = document.querySelectorAll('#infer-res-table tr');
+                const rows = document.querySelectorAll('#infer-res-table tbody tr');
                 rows.forEach((row) => {
                   row.onclick = () => {
-                    rs = document.querySelectorAll('#infer-res-table tr');
+                    const rs = document.querySelectorAll('#infer-res-table tbody tr');
                     rs.forEach((r) => {
                       r.classList.remove('selected');
                     })
@@ -64,6 +64,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
                   document.getElementById("infer-modal").style.display = "none";
+
+                }
+
+                document.querySelector("#infer-filter").onclick = () => {
+                  const minLc = document.querySelector("#infer-min").value ?
+                                  document.querySelector("#infer-min").value :
+                                  "0.0.0.0.0";
+                  const maxLc = document.querySelector("#infer-max").value ?
+                                  document.querySelector("#infer-max").value :
+                                  "20.0.0.0.0";
+
+
+                  const minKin = lcStrToKin(minLc);
+                  const maxKin = lcStrToKin(maxLc);
+                  console.log(minKin);
+                  console.log(maxKin);
+
+                  document.querySelectorAll('#infer-res-table tbody tr').forEach((row) => {
+                    if (parseInt(row.dataset.total_kin) < minKin || parseInt(row.dataset.total_kin) > maxKin) {
+                      row.style.display = "none";
+                    } else {
+                      row.style.display = "table-row";
+                    }
+                  })
 
                 }
               }
@@ -311,14 +335,14 @@ const infer = () => {
       // Update the result div
       if (data.success) {
         const table = document.querySelector('#infer-res-table tbody');
-        possDates = data.data.poss_dates;
+        const possDates = data.data.poss_dates;
         possDates.forEach((date) => {
-          const dateStrs = mayadateToString(date)
+          const dateStrs = mayadateToString(date);
           const row = table.insertRow();
 
-          setDateAttrs(row, date);
-          console.log(lcStrToKin(dateStrs.long_count));
           row.dataset.total_kin = lcStrToKin(dateStrs.long_count);
+
+          setDateAttrs(row, date);
 
           const lcCell = row.insertCell(0);
           const crCell = row.insertCell(1);
@@ -328,18 +352,16 @@ const infer = () => {
           crCell.innerHTML = dateStrs.calendar_round;
           gCell.innerHTML = dateStrs.glyph_g;
 
-
-
         })
 
-        rows = document.querySelectorAll('#infer-res-table tbody tr');
-        rows.forEach((row) => {
-          row.onclick = () => {
-            rs = document.querySelectorAll('#infer-res-table tbody tr');
-            rs.forEach((r) => {
+        const rows = document.querySelectorAll('#infer-res-table tbody tr');
+        rows.forEach((rowObj) => {
+          rowObj.onclick = () => {
+            const rowObjs = document.querySelectorAll('#infer-res-table tbody tr');
+            rowObjs.forEach((r) => {
               r.classList.remove('selected');
             })
-            row.classList.toggle('selected');
+            rowObj.classList.toggle('selected');
           }
         })
 
@@ -736,7 +758,7 @@ const monthFromNum = (num) => {
 
 const lcStrToKin = (lcStr) => {
   const vals = lcStr.split(".")
-  let num = (parseInt(vals[4]) + (parseInt(vals[3]) * 20) + (parseInt(vals[2]) * 20 * 18) +
+  const num = (parseInt(vals[4]) + (parseInt(vals[3]) * 20) + (parseInt(vals[2]) * 20 * 18) +
                 (parseInt(vals[3]) * 18 * (20 ** 2)) + (parseInt(vals[0]) * 18 * (20 ** 3)))
 
   return num

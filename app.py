@@ -78,7 +78,7 @@ def distance_number():
             current_lc = current_lc + dn
             response_dict['resulting_dates'].append({
                     'row' : idx + 1,
-                    'date' : current_lc.get_mayadate().to_dict()
+                    'date' : process_date_dict(current_lc.get_mayadate().to_dict())
                 })
 
         return jsonify(response_dict)
@@ -95,21 +95,21 @@ def infer():
     req_json = request.get_json()
     print(req_json, file=sys.stderr)
 
-    try:
+    # try:
 
-        date = json_to_mayadate(req_json)
-        poss_dates = date.infer_mayadates()
+    date = json_to_mayadate(req_json)
+    poss_dates = date.infer_mayadates()
 
-        poss_dates = [d.to_dict() for d in poss_dates]
-        response_dict = {
-            'success' : True,
-            'data' : {'poss_dates' : poss_dates}}
-
-    except:
-        response_dict = {
-            'success' : False,
-            'message' : "Unable to infer date components"
-        }
+    poss_dates = [process_date_dict(d.to_dict()) for d in poss_dates]
+    response_dict = {
+        'success' : True,
+        'data' : {'poss_dates' : poss_dates}}
+    #
+    # except:
+    #     response_dict = {
+    #         'success' : False,
+    #         'message' : "Unable to infer date components"
+    #     }
 
     return jsonify(response_dict)
 
@@ -262,3 +262,36 @@ def json_to_distance_number(json_obj):
     lc = mc.LongCount(baktun, katun, tun, winal, kin)
 
     return mc.DistanceNumber(lc, sign)
+
+def process_date_dict(date_dict):
+
+    date_dict["calendar_round"]["tzolkin"]["day_name"] = tz_add_apostrophes(date_dict["calendar_round"]["tzolkin"]["day_name"])
+    date_dict["calendar_round"]["haab"]["month_name"] = hb_add_apostrophes(date_dict["calendar_round"]["haab"]["month_name"])
+
+    return date_dict
+
+
+def tz_add_apostrophes(day_name):
+
+    apost_dict = {k:k for k in mc.TZOLKIN_DAYS}
+
+    apost_dict["Ik"] = "Ik'"
+    apost_dict["Akbal"] = "Ak'bal"
+    apost_dict["Kan"] = "K'an"
+    apost_dict["Manik"] = "Manik'"
+    apost_dict["Etznab"] = "Etz'nab"
+
+    return apost_dict[day_name]
+
+def hb_add_apostrophes(month_name):
+
+    apost_dict = {k:k for k  in mc.HAAB_MONTHS}
+
+    apost_dict["Sotz"] = "Sotz'"
+    apost_dict["Yaxkin"] = "Yaxk'in"
+    apost_dict["Chen"] = "Ch'en"
+    apost_dict["Kankin"] = "Kank'in"
+    apost_dict["Kayab"] = "K'ayab"
+    apost_dict["Kumku"] = "Kumk'u"
+
+    return apost_dict[month_name]

@@ -391,21 +391,25 @@
     <div class="modal-body">
 
       <div class="form-row">
-        <div class="col-4">
+        <div class="col-5">
           <h5>Filter results</h5>
         </div>
         <div class="col-1">
           <label for="infer-min">From:</label>
         </div>
-        <div class="col-3">
+        <div class="col-2">
           <input id="infer-min" type="text" class="form-control" placeholder="9.0.0.0.0">
         </div>
         <div class="col-1">
           <label for="infer-min">To:</label>
         </div>
-        <div class="col-3">
+        <div class="col-2">
           <input id="infer-max" type="text" class="form-control" placeholder="10.0.0.0.0">
         </div>
+        <div class="col-1">
+        <button id='infer-filter' class="btn btn-primary" type=button>Filter</button>
+        </div>
+
       </div>
       <div class="table-scroll">
         <table class ="table table-sm" id="infer-res-table">

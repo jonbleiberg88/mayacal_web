@@ -139,7 +139,7 @@ input:focus::placeholder{
       border-color: lightgray;
       border-width: thin;
     }
-    table {
+    table tbody {
       tr:hover {
         cursor: pointer;
       }
