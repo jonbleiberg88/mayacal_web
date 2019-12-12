@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
       //     document.querySelector('.baktun').nextElementSibling.style.display = "none";
       //     e.target.classList.remove("invalid-input");
       //   };
-      // 
+      //
       // }, false);
 
 });
@@ -310,14 +310,15 @@ const infer = () => {
 
       // Update the result div
       if (data.success) {
-        const table = document.querySelector('#infer-res-table');
+        const table = document.querySelector('#infer-res-table tbody');
         possDates = data.data.poss_dates;
         possDates.forEach((date) => {
-          dateStrs = mayadateToString(date)
+          const dateStrs = mayadateToString(date)
           const row = table.insertRow();
 
           setDateAttrs(row, date);
-
+          console.log(lcStrToKin(dateStrs.long_count));
+          row.dataset.total_kin = lcStrToKin(dateStrs.long_count);
 
           const lcCell = row.insertCell(0);
           const crCell = row.insertCell(1);
@@ -327,12 +328,14 @@ const infer = () => {
           crCell.innerHTML = dateStrs.calendar_round;
           gCell.innerHTML = dateStrs.glyph_g;
 
+
+
         })
 
-        rows = document.querySelectorAll('#infer-res-table tr');
+        rows = document.querySelectorAll('#infer-res-table tbody tr');
         rows.forEach((row) => {
           row.onclick = () => {
-            rs = document.querySelectorAll('#infer-res-table tr');
+            rs = document.querySelectorAll('#infer-res-table tbody tr');
             rs.forEach((r) => {
               r.classList.remove('selected');
             })
@@ -676,6 +679,7 @@ const processDateObj = (dateObj) => {
   return dateObj;
 }
 
+
 const monthFromNum = (num) => {
   let month = "";
   switch(num) {
@@ -724,8 +728,16 @@ const monthFromNum = (num) => {
       break;
 
     case 12:
-      month = "Jun";
+      month = "Dec";
       break;
   }
   return month;
+}
+
+const lcStrToKin = (lcStr) => {
+  const vals = lcStr.split(".")
+  let num = (parseInt(vals[4]) + (parseInt(vals[3]) * 20) + (parseInt(vals[2]) * 20 * 18) +
+                (parseInt(vals[3]) * 18 * (20 ** 2)) + (parseInt(vals[0]) * 18 * (20 ** 3)))
+
+  return num
 }
